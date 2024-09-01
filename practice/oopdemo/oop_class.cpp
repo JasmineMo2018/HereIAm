@@ -7,160 +7,133 @@
 
 
 // 怎样写一个不能被其他类所继承的类？==========================================
-//class FinalClass {
-// public:
-//  FinalClass() {
-//    std::cout << "FinalClass()" << std::endl;
-//  }
-//  virtual ~FinalClass() { std::cout << "~FinalClass()" << std::endl; }
-//
-//};
 
 // 1. 可以把父类的构造写成private，但是会导致父类没办法使用
-// 2. 不过可以考虑搞成单例，也可以用
-
-
-class FinalClass final{
- public:
-  FinalClass() { std::cout << "FinalClass()" << std::endl; }
-  virtual ~FinalClass() { std::cout << "~FinalClass()" << std::endl; }
+// 不过可以考虑搞成单例，也可以用
+class FinalClassTest {
+ private:
+  FinalClassTest() { std::cout << "FinalClass()" << std::endl; }
+  virtual ~FinalClassTest() { std::cout << "~FinalClass()" << std::endl; }
 };
 
-// 3. C++11 新特性 final 保证当前的类不能被继承，但是本身不会受影响
+// 2. C++11 新特性 final 保证当前的类不能被继承，但是本身不会受影响
 
- class InheritC /*: public FinalClass*/ {
-  public:
-   InheritC() {
-     std::cout << "InheritC()" << std::endl;
-   }
-   virtual ~InheritC() { std::cout << "~InheritC()" << std::endl; }
-
- };
+class FinalClassTest1 final {
+ private:
+  FinalClassTest1() { std::cout << "FinalClassTest1()" << std::endl; }
+  virtual ~FinalClassTest1() { std::cout << "~FinalClassTest1()" << std::endl; }
+};
 
 //  * 接口继承 
- class CanFlyable {
-  public:
-   virtual void Fly() = 0;
- };
+class CanFlyable {
+ public:
+  virtual void Fly() = 0;
 
+};
 
- class Bird {
-  public:
-   virtual ~Bird() {}
+class Bird {
+ public:
+  virtual void Walk() { std::cout << "Bird Walk." << std::endl; }
 
-  public:
-   virtual void Walk() {}
-   virtual void get_length() {}
+  double GetLength() { return length_; }
+ private:
+  double length_ = 0;
 
-  private:
-   uint32_t length() {}
- };
+};
 
- void default_walk() { std::cout << "default_walk." << std::endl; }
+class Sprrow : public Bird, public CanFlyable {
+ public:
+  virtual void Fly() override { std::cout << "Sprrow Fly." << std::endl;
+  }
+
+  virtual void Walk() override { std::cout << "Sprrow Walk." << std::endl; }
+  };
+
+class Ostrich : public Bird {
+ public:
+  virtual void Walk() override { std::cout << "Ostrich Walk." << std::endl; }
+};
+
+class Bat : public CanFlyable {
+ public:
+  virtual void Fly() override { std::cout << "Bat Fly." << std::endl; };
+};
+
+// 不用虚函数
+void default_walk() { std::cout << "default_walk." << std::endl; }
+class BirdA {
+ public:
+  typedef std::function<void()> MyWalkFunc;
+  BirdA(MyWalkFunc func = default_walk) : func_(func) {}
+
+  void WalkF() const { func_();
+  }
+ private:
+  MyWalkFunc func_;
+};
+
+void SprrowWalk() { std::cout << "SprrowWalk." << std::endl; }
+void BatWalk() { std::cout << "BatWalk." << std::endl; }
+
+class SprrowA : public BirdA{
+ public:
+  typedef std::function<void()> MyWalkFunc;
+  SprrowA(MyWalkFunc f) : BirdA(f) {}
+
+};
+
+class BatA : public BirdA {
+ public:
+  typedef std::function<void()> MyWalkFunc;
+  typedef void(*MyWalkFunc2)();
+  BatA(MyWalkFunc f) : BirdA(f) {}
+};
 
  // 不用虚函数实现多态 指针的传递
  // 虚函数是动态多态、模板是静态多态
 
- class BirdA {
-  public:
-   // typedef void (*MyWalkFunc)();
-   typedef std::function<void()> MyWalkFunc;
-   BirdA(MyWalkFunc func) : func_(func) {}
-
-  private:
-   MyWalkFunc func_;
-
-  public:
-   void WalkF() { func_(); }
- };
-
- class SparrowA : public BirdA {
-  public:
-   typedef void (*MyWalkFunc)();
-   SparrowA(MyWalkFunc func = default_walk) : BirdA(func) {}
- };
-
- void SparrowWalk() { std::cout << "SparrowWalk." << std::endl; }
-
- class TNA : public BirdA {
-  public:
-   typedef void (*MyWalkFunc)();
-   TNA(MyWalkFunc func = default_walk) : BirdA(func) {}
- };
-
- void TNWalk() { std::cout << "TNWalk." << std::endl; }
-
- class Sparrow : public Bird, public CanFlyable {
-  public:
-   virtual ~Sparrow() {}
-
-  public:
-   virtual void Fly() {}
- };
+// 菱形继承
+class Shape_Basic {
+ public:
+  Shape_Basic(int id) { std::cout << "Shape_Basic()" << std::endl; }
+ protected:
+  int id_ = 0;
 
 
-
-
-void DefaultWalk() { std::cout << "B Default walk" << std::endl; }
-
-class BirdB {
-  public:
-   typedef std::function<void()> MyBirdBWalk;
-   BirdB(MyBirdBWalk func = DefaultWalk) { func_ = func;
-   }
-
-   void Walk() { func_();
-   }
-  private:
-   MyBirdBWalk func_;
 };
 
-void AAAWalk() { std::cout << "AAAWalk" << std::endl; }
+class Shape_WithColor : virtual public Shape_Basic {
+ public:
+  Shape_WithColor(int id) : Shape_Basic(id){
+  }
 
-class AAA : public BirdB {
-  public:
-   AAA(MyBirdBWalk func) : BirdB(func){}
+  void SetId(int id) { id_ = id;
+  }
+};
+
+class Shape_WithShape : virtual public Shape_Basic {
+ public:
+  Shape_WithShape(int id) : Shape_Basic(id) { id_ = id; }
+
+  int GetID() { return id_;
+  }
 
 };
-void BBBWalk() { std::cout << "BBBWalk" << std::endl; }
 
-class BBB : public BirdB {
-  public:
-   BBB(MyBirdBWalk func) : BirdB(func) {}
-
+class Shape : public Shape_WithColor, public Shape_WithShape {
+ public:
+  Shape(int id) : Shape_WithColor(id), Shape_WithShape(id), Shape_Basic(id) {}
 };
 
 // 多重继承
 // 虚继承
-class Shape_Basic {
-  public:
-   Shape_Basic(int id) : id_(id) {}
 
-  public:
-   int id_;
-};
 
-class Shape_WithColor : virtual public Shape_Basic {
-  public:
-   Shape_WithColor(int id) : Shape_Basic(id) {}
-   void set_id(int id) { id_ = id; }
-};
+int main() { 
+  Shape shape_1(1);
+  shape_1.SetId(2);
+  std::cout << "id = " << shape_1.GetID();
+  
 
-class Shape_WithShape : virtual public Shape_Basic {
-  public:
-   Shape_WithShape(int id) : Shape_Basic(id) {}
-   int get_id() const { return id_;
-   }
-};
-
-class MyShape : public Shape_WithColor, public Shape_WithShape {
-
-  public:
-   MyShape(int id) : Shape_WithColor(id), Shape_WithShape(id), Shape_Basic(id) {}
-};
-
-int main() {
-  MyShape s(1);
-   s.set_id(2);
-  std::cout << s.get_id() << std::endl;
+  return 0;
 }
