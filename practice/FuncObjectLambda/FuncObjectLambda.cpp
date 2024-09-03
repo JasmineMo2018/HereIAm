@@ -8,6 +8,9 @@
 #include <vector>
 #include <algorithm>
 
+#include <thread>
+#include <mutex>
+
 int compare(const void* a, const void* b) {
   if (a == nullptr || b == nullptr) {
     return 0;
@@ -41,6 +44,33 @@ class ToUpper {
     return c;
   }
 };
+
+class TestMemfn {
+ public:
+  void DisplayNoPara() { std::cout << "TestMemfn::DisplayNoPara" << std::endl;
+  }
+
+ void DisplayWithNumber(int i) { std::cout << "TestMemfn::DisplayWithNumber" << i << std::endl; }
+
+  int data_ = 10;
+
+};
+
+int fibonacci(int n) {
+  // 1\1\2\3\5\8
+  if (n <= 2) {
+    return 1;
+  } else {
+    return fibonacci(n - 1) + fibonacci(n - 2);
+  }
+}
+
+inline int MaxValue(int a, int b) {
+  if (a > b) {
+    return a;
+  }
+  return b;
+}
 
 int main() {
   // C的排序
@@ -103,7 +133,7 @@ int main() {
     return value <= distance;
   };
 
-  // std::bind
+  // std::bind 将函数对象的参数绑定至特定的值
   auto f1 = std::bind([](int i, int b) noexcept -> int { return i + b; }, std::placeholders::_1, 2);
   std::cout << f1(1) << std::endl;
 
@@ -123,8 +153,32 @@ int main() {
                                          std::bind(upper, std::placeholders::_2)));
   std::cout << (func3_res != str1.end()) << std::endl;
 
-  // std::memfn
+  // std::memfn 类对象的成员函数转换成普通函数
+  TestMemfn testM;
+  std::mem_fn (&TestMemfn::DisplayNoPara)(testM);
+  std::mem_fn (&TestMemfn::DisplayWithNumber)(testM, 10);
+  std::mem_fn (&TestMemfn::data_)(testM);
 
+  // lambda 表达式 多线程 斐波那契数列
+  int n = 10;
+  std::mutex mutex;
+  auto call_fib = [&mutex](int n) { 
+
+    std::cout << "fib (" << n << ") = " << fibonacci(n) << std::endl; };
+
+  std::thread t1(call_fib, n);
+  std::thread t2(call_fib, n - 1);
+  std::thread t3(call_fib, n - 2);
+
+  t1.join();
+  t2.join();
+  t3.join();
+
+  // inline 空间换时间 代码段直接插入到调用的地方
+  // 但是是否真的inline 取决于编译器是否采用
+  int inA = 3, inB = 4;
+  int res = MaxValue(inA, inB);
+  std::cout << res << std::endl;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
