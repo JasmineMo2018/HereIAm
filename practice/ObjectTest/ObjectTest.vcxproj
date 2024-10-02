@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{08cbddc1-979d-4fc4-9dd6-22a047ec8ae1}</ProjectGuid>
-    <RootNamespace>inline</RootNamespace>
+    <ProjectGuid>{a80290b3-e9b7-43fc-9d7f-b24328a2b35d}</ProjectGuid>
+    <RootNamespace>ObjectTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -76,7 +76,6 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,11 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="inline.cpp" />
-    <ClCompile Include="MyTestString.cpp" />
+    <ClCompile Include="ClassTest.cpp" />
+    <ClCompile Include="ObjectTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyTestString.h" />
+    <ClInclude Include="ClassTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

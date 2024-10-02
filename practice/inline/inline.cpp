@@ -9,11 +9,39 @@ inline int maxValue(int a, int b) {
 
 int main()
 {
+  const char* my_str = "my\0str";
+  std::cout << sizeof(my_str) << std::endl; // 4 指针的长度
+  std::cout << strlen(my_str) << std::endl;  // 2 不算\0
+
+  char arr[10] = "mys\0tr";
+  std::cout << sizeof(arr) << std::endl; // 10
+  std::cout << strlen(arr) << std::endl; // 3 不算\0
+
+  char* arr_ptr = new char[10];
+  std::cout << strlen(arr_ptr) << std::endl;  // 不一定
+  std::cout << sizeof(arr_ptr) << std::endl;  // 4
+  std::cout << sizeof(*arr_ptr) << std::endl; // 1
+
+
+  int b = 0b11001;
+  bool is_equal_zero = b & (1 << 3); // 1
+  
+
+  std::cout << is_equal_zero << std::endl;
   // inline 空间换时间 代码段直接插入到调用的地方
   // 但是是否真的inline 取决于编译器是否采用
   // vs2022 还是call了
   int x = 3, y = 4;
   maxValue(x, y);
+
+  // mutable -> const  // 可以在一个const函数里面改变它
+
+  // volatile 拒绝编译器的优化缓存 每次都去取实际的值
+  const volatile int min_len = 10;
+  int* ptr = (int*)(& min_len) ;
+  *ptr = 11;
+  std::cout << min_len << std::endl; // 10
+  std::cout << *ptr << std::endl; // 11
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

@@ -130,6 +130,12 @@ class Shape : public Shape_WithColor, public Shape_WithShape {
 
 
 int main() { 
+  uint64_t a = 0;
+  std::cout << sizeof(a) << std::endl;
+
+
+
+
   Shape shape_1(1);
   shape_1.SetId(2);
   std::cout << "id = " << shape_1.GetID();

@@ -104,3 +104,109 @@ MyString::~MyString() {
   m_len = 0;
   m_alloc = 0;
 }
+
+
+   // 四个构造
+MyStringTest::MyStringTest(int size) {
+  my_string_ptr_ = new (std::nothrow) char[size];
+  if (my_string_ptr_ == nullptr) {
+    exit(-1);
+  }
+  my_string_ptr_[size - 1] = '\0';
+  string_len = size - 1;
+  malloc_len = size;
+}
+
+MyStringTest::MyStringTest() {
+  my_string_ptr_ = new (std::nothrow) char[1];
+  if (my_string_ptr_ == nullptr) {
+    exit(-1);
+  }
+  *my_string_ptr_ = '\0';
+  string_len = 0;
+  malloc_len = 1;
+}
+
+MyStringTest::MyStringTest(const char* str_ptr) {
+  if (str_ptr == nullptr) {
+    my_string_ptr_ = new (std::nothrow) char[1];
+    if (my_string_ptr_ == nullptr) {
+      exit(-1);
+    }
+    *my_string_ptr_ = '\0';
+    string_len = 0;
+    malloc_len = 1;
+  } else {
+    int cur_len = strlen(str_ptr);
+    my_string_ptr_ = new (std::nothrow) char[cur_len + 1];
+    if (my_string_ptr_ == nullptr) {
+      exit(-1);
+    }
+    strcpy(my_string_ptr_, str_ptr);
+    string_len = cur_len;
+    malloc_len = cur_len + 1;
+  }
+}
+
+MyStringTest::MyStringTest(const MyStringTest& ob) {
+  my_string_ptr_ = new (std::nothrow) char[ob.malloc_len];
+  if (my_string_ptr_ == nullptr) {
+    exit(-1);
+  }
+  strcpy(my_string_ptr_, ob.my_string_ptr_);
+
+  string_len = ob.string_len;
+  malloc_len = ob.malloc_len;
+}
+
+MyStringTest::MyStringTest(MyStringTest&& ob) {
+  my_string_ptr_ = ob.my_string_ptr_;
+  string_len = ob.string_len;
+  malloc_len = ob.malloc_len;
+
+  ob.my_string_ptr_ = nullptr;
+}
+
+// 两个赋值
+MyStringTest& MyStringTest::operator=(const MyStringTest& ob) {
+  if (this != &ob) {
+    if (my_string_ptr_ != nullptr) {
+      delete[] my_string_ptr_;
+    }
+
+    my_string_ptr_ = new (std::nothrow) char[ob.malloc_len];
+    if (my_string_ptr_ == nullptr) {
+      exit(-1);
+    }
+    strcpy(my_string_ptr_, ob.my_string_ptr_);
+
+    string_len = ob.string_len;
+    malloc_len = ob.malloc_len;
+  }
+  return *this;
+}
+
+MyStringTest& MyStringTest::operator=(MyStringTest&& ob) {
+  if (this != &ob) {
+    if (my_string_ptr_ != nullptr) {
+      delete[] my_string_ptr_;
+    }
+
+    my_string_ptr_ = ob.my_string_ptr_;
+    string_len = ob.string_len;
+    malloc_len = ob.malloc_len;
+
+    ob.my_string_ptr_ = nullptr;
+  }
+  return *this;
+}
+
+// 一个析构
+MyStringTest::~MyStringTest() {
+  if (my_string_ptr_ != nullptr) {
+    delete[] my_string_ptr_;
+  }
+  my_string_ptr_ = nullptr;
+  string_len = 0;
+  malloc_len = 0;
+}

@@ -22,3 +22,46 @@ class MyString {
    size_t m_len = 0;
    size_t m_alloc = 0;
 };
+
+// RVO
+/*
+  早期函数返回值：
+    1. 值传递
+    2. 引用传递 内部对参数处理
+
+  返回临时对象的处理：
+    
+
+  编译器对返回值的优化：
+  1. move语义
+  2. RVO 和 NRVO 无名和有名 全局区开辟一块空间存地址，然后传递给外面的栈
+
+
+
+*/
+
+class MyStringTest {
+  public:
+   // 五个构造
+   MyStringTest();
+
+   MyStringTest(const char* str_ptr);
+
+   explicit MyStringTest(int size);
+
+   MyStringTest(const MyStringTest& ob);
+   MyStringTest(MyStringTest&& ob);
+
+   // 两个赋值
+   MyStringTest& operator=(const MyStringTest& ob);
+   MyStringTest& operator=(MyStringTest&& ob);
+
+
+   // 一个析构
+   virtual ~MyStringTest();
+
+ private:
+   char* my_string_ptr_ = nullptr;
+   int string_len = 0;
+   int malloc_len = 0;
+};

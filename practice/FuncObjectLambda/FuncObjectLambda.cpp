@@ -98,6 +98,8 @@ int main() {
   }
   std::cout << std::endl;
 
+  // [] (int x, int y) -> bool {return x < y;};
+
   auto hi = []() -> void { std::cout << "hello world1" << std::endl; };
   hi();
 
@@ -152,6 +154,15 @@ int main() {
                                          std::bind(upper, std::placeholders::_1),
                                          std::bind(upper, std::placeholders::_2)));
   std::cout << (func3_res != str1.end()) << std::endl;
+
+  auto func4 = std::search(str1.begin(), str1.end(), str2.begin(), str2.end(),
+                           std::bind(std::equal_to<char>{}, std::bind(upper, std::placeholders::_1), std::bind(upper, std::placeholders::_2)));
+
+
+  char c1 = 'a';
+  char c2 = 'b';
+  auto equal = std::equal_to<char>{};
+  equal(c1, c2);
 
   // std::memfn 类对象的成员函数转换成普通函数
   TestMemfn testM;
