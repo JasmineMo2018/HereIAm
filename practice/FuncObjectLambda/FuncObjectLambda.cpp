@@ -156,7 +156,9 @@ int main() {
   std::cout << (func3_res != str1.end()) << std::endl;
 
   auto func4 = std::search(str1.begin(), str1.end(), str2.begin(), str2.end(),
-                           std::bind(std::equal_to<char>{}, std::bind(upper, std::placeholders::_1), std::bind(upper, std::placeholders::_2)));
+                           std::bind(std::equal_to<char>{}, 
+                                     std::bind(upper, std::placeholders::_1),
+                                     std::bind(upper, std::placeholders::_2)));
 
 
   char c1 = 'a';
